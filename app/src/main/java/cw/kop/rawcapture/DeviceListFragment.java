@@ -246,6 +246,7 @@ public class DeviceListFragment extends Fragment {
 
         return netId;
     }
+    
 
     public void connectToNetwork(int netId) {
 
