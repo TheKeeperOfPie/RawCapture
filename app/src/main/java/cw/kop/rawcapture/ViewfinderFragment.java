@@ -10,7 +10,13 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.io.IOException;
+
+import cw.kop.rawcapture.api.ApiHelper;
 
 /**
  * Created by TheKeeperOfPie on 8/29/2014.
@@ -34,7 +40,31 @@ public class ViewfinderFragment extends Fragment {
         testTextView.setGravity(Gravity.CENTER_HORIZONTAL);
         testTextView.setText("Viewfinder goes here");
 
-        return testTextView;
+        Button testPictureButton = new Button(context);
+        testPictureButton.setText("Take Picture");
+        testPictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            new ApiHelper().actTakePicture();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+        });
+
+        LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+//        linearLayout.addView(testTextView);
+        linearLayout.addView(testPictureButton);
+
+        return linearLayout;
 
 //        return super.onCreateView(inflater, container, savedInstanceState);
     }

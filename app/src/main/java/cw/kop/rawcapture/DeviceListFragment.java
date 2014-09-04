@@ -12,6 +12,8 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.TypedValue;
@@ -28,11 +30,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cw.kop.rawcapture.api.ApiHelper;
 import cw.kop.rawcapture.api.CameraDevice;
 import cw.kop.rawcapture.api.DeviceListAdapter;
+import cw.kop.rawcapture.api.HttpConnector;
 import cw.kop.rawcapture.api.SsdpClient;
 
 /**
@@ -43,6 +48,7 @@ public class DeviceListFragment extends Fragment {
     private Context context;
     private DeviceListAdapter deviceListAdapter;
     private WifiManager wifiManager;
+    private Handler handler;
 
     @Override
     public void onAttach(Activity activity) {
@@ -57,6 +63,8 @@ public class DeviceListFragment extends Fragment {
         deviceListAdapter = new DeviceListAdapter(context);
         wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         wifiManager.setWifiEnabled(true);
+
+        handler = new Handler();
     }
 
     @Nullable
@@ -267,16 +275,43 @@ public class DeviceListFragment extends Fragment {
                         deviceFound = true;
                         AppSettings.setCameraDevice(device);
 
+                        try {
+                            HttpConnector.httpGet(AppSettings.getCameraDdUrl());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                     }
 
                     @Override
                     public void onFinished() {
 
                         if (deviceFound) {
-                            Toast.makeText(context, AppSettings.getCameraFriendlyName() + " connected", Toast.LENGTH_LONG).show();
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context, AppSettings.getCameraFriendlyName() + " connected", Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        new ApiHelper().startLiveview();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }).start();
                         }
                         else {
-                            Toast.makeText(context, "Error connecting device", Toast.LENGTH_LONG).show();
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context, "Error connecting device", Toast.LENGTH_LONG).show();
+                                }
+                            });
                         }
 
                     }
@@ -301,7 +336,5 @@ public class DeviceListFragment extends Fragment {
 
         return true;
     }
-
-
 
 }

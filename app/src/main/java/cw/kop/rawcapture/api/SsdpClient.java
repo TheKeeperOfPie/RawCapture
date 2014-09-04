@@ -139,6 +139,7 @@ public class SsdpClient {
                 if (socket != null && !socket.isClosed()) {
                     socket.close();
                 }
+                handler.onFinished();
             }
         }.start();
 
