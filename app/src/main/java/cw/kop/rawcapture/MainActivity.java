@@ -8,6 +8,8 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +22,8 @@ import android.widget.TextView;
 
 
 public class MainActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -52,10 +56,26 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position))
-                .commit();
+        Log.i(TAG, "Position: " + position);
+
+        switch (position) {
+            case 0:
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, new ViewfinderFragment())
+                        .commit();
+                break;
+            case 1:
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, new DeviceListFragment())
+                        .commit();
+                break;
+            case 2:
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, PlaceholderFragment.newInstance(2))
+                        .commit();
+                break;
+            default:
+        }
     }
 
     public void onSectionAttached(int number) {

@@ -84,6 +84,12 @@ public class SsdpClient {
                     packet = new DatagramPacket(sendData, sendData.length, iAddress);
                     Log.i(TAG, "search() Send Datagram packet 3 times.");
                     socket.send(packet);
+                    Thread.sleep(100);
+                    socket.send(packet);
+                    Thread.sleep(100);
+                    socket.send(packet);
+                } catch (InterruptedException e) {
+                    // do nothing.
                 } catch (SocketException e) {
                     Log.e(TAG, "search() DatagramSocket error:", e);
                 } catch (IOException e) {

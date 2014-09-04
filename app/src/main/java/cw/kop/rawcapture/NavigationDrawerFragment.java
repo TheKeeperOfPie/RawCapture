@@ -201,22 +201,6 @@ public class NavigationDrawerFragment extends Fragment {
         if (mCallbacks != null) {
             mCallbacks.onNavigationDrawerItemSelected(position);
         }
-
-        switch (position) {
-
-            case 0:
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.container, new ViewfinderFragment())
-                        .commit();
-                break;
-            case 1:
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.container, new DeviceListFragment())
-                        .commit();
-                break;
-            default:
-
-        }
     }
 
     @Override

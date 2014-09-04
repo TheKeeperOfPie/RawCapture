@@ -5,10 +5,7 @@ import cw.kop.rawcapture.api.CameraDevice;
 /**
  * Created by TheKeeperOfPie on 9/1/2014.
  *
- *
  */
-
-// Test Edit
 
 public class AppSettings {
 

@@ -13,7 +13,6 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.TypedValue;
@@ -30,6 +29,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,35 +48,40 @@ import cw.kop.rawcapture.api.SsdpClient;
  */
 public class DeviceListFragment extends Fragment {
 
-    private Context context;
+    private static final String TAG = DeviceListFragment.class.getSimpleName();
+
+    private Context appContext;
     private DeviceListAdapter deviceListAdapter;
     private WifiManager wifiManager;
     private Handler handler;
+    private int connectedNetId;
+    private ApiHelper apiHelper;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        context = activity;
+        appContext = activity;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        deviceListAdapter = new DeviceListAdapter(context);
-        wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        deviceListAdapter = new DeviceListAdapter(appContext);
+        wifiManager = (WifiManager) appContext.getSystemService(Context.WIFI_SERVICE);
         wifiManager.setWifiEnabled(true);
 
         handler = new Handler();
+        apiHelper = new ApiHelper();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.device_list, container);
+        View view = inflater.inflate(R.layout.device_list, null);
 
-        TextView emptyText = new TextView(context);
+        TextView emptyText = new TextView(appContext);
         emptyText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
         emptyText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         emptyText.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -88,6 +96,8 @@ public class DeviceListFragment extends Fragment {
         deviceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Log.i(TAG, "Scanning");
 
                 wifiManager.setWifiEnabled(true);
                 int netId = -1;
@@ -111,7 +121,7 @@ public class DeviceListFragment extends Fragment {
             }
         });
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
 
     @Override
@@ -156,6 +166,73 @@ public class DeviceListFragment extends Fragment {
             }
 
             context.unregisterReceiver(scanResultsBroadcastReceiver);
+        }
+
+    };
+
+    private BroadcastReceiver connectedReceiver = new BroadcastReceiver()
+    {
+        @Override
+        public void onReceive(final Context context, Intent intent)
+        {
+            if (wifiManager.getConnectionInfo().getNetworkId() == connectedNetId) {
+
+                SsdpClient ssdpClient = new SsdpClient();
+
+                ssdpClient.search(new SsdpClient.SearchResultHandler() {
+
+                    private boolean deviceFound = false;
+
+                    @Override
+                    public void onDeviceFound(CameraDevice device) {
+
+                        deviceFound = true;
+                        AppSettings.setCameraDevice(device);
+
+                        try {
+                            HttpConnector.httpGet(AppSettings.getCameraDdUrl());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFinished() {
+
+                        if (deviceFound) {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context, AppSettings.getCameraFriendlyName() + " connected", Toast.LENGTH_LONG).show();
+                                }
+                            });
+
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    establishConnection();
+                                }
+                            }).start();
+                        } else {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context, "Error connecting device", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+
+                    }
+
+                    @Override
+                    public void onErrorFinished() {
+
+                    }
+                });
+
+                context.unregisterReceiver(connectedReceiver);
+            }
         }
 
 
@@ -261,66 +338,11 @@ public class DeviceListFragment extends Fragment {
         List<WifiConfiguration> configuredNetworks = wifiManager.getConfiguredNetworks();
         for (WifiConfiguration wc : configuredNetworks) {
             if(wc.networkId == netId) {
+                appContext.registerReceiver(connectedReceiver, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
+
                 wifiManager.enableNetwork(netId, true);
 
-                SsdpClient ssdpClient = new SsdpClient();
-
-                ssdpClient.search(new SsdpClient.SearchResultHandler() {
-
-                    private boolean deviceFound = false;
-
-                    @Override
-                    public void onDeviceFound(CameraDevice device) {
-
-                        deviceFound = true;
-                        AppSettings.setCameraDevice(device);
-
-                        try {
-                            HttpConnector.httpGet(AppSettings.getCameraDdUrl());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-
-                    @Override
-                    public void onFinished() {
-
-                        if (deviceFound) {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(context, AppSettings.getCameraFriendlyName() + " connected", Toast.LENGTH_LONG).show();
-                                }
-                            });
-
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        new ApiHelper().startLiveview();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }).start();
-                        }
-                        else {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(context, "Error connecting device", Toast.LENGTH_LONG).show();
-                                }
-                            });
-                        }
-
-                    }
-
-                    @Override
-                    public void onErrorFinished() {
-
-                    }
-                });
+                connectedNetId = netId;
             }
         }
     }
@@ -329,12 +351,52 @@ public class DeviceListFragment extends Fragment {
 
         deviceListAdapter.clear();
 
-        context.registerReceiver(scanResultsBroadcastReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        appContext.registerReceiver(scanResultsBroadcastReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         wifiManager.startScan();
 
-        Toast.makeText(context, "Scanning...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(appContext, "Scanning...", Toast.LENGTH_SHORT).show();
 
         return true;
+    }
+
+    private boolean establishConnection() {
+
+        try {
+            JSONObject apiList = apiHelper.getAvailableApiList();
+            setAvailableApiList(apiList);
+
+            apiHelper.getApplicationInfo();
+
+            apiHelper.startRecMode();
+
+            apiHelper.startLiveview();
+
+            apiList = apiHelper.getAvailableApiList();
+            setAvailableApiList(apiList);
+
+            apiHelper.getSupportedIsoSpeedRate();
+
+            Log.i(TAG, "Liveview started");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+
+    private void setAvailableApiList(JSONObject apiObject) {
+
+        try {
+            JSONArray resultArray = apiObject.getJSONArray("result");
+
+            Log.i(TAG, "Result array: " + resultArray.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }

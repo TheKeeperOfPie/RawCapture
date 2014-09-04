@@ -34,6 +34,108 @@ public class ApiHelper {
         return false;
     }
 
+    /**
+     * Calls getAvailableApiList API to the target server. Request JSON data is
+     * such like as below.
+     *
+     * <pre>
+     * {
+     *   "method": "getAvailableApiList",
+     *   "params": [""],
+     *   "id": 2,
+     *   "version": "1.0"
+     * }
+     * </pre>
+     *
+     * @return JSON data of response
+     */
+    public JSONObject getAvailableApiList() throws IOException {
+        String service = "camera";
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "getAvailableApiList")
+                    .put("params", new JSONArray())
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + service;
+
+            Log.i(TAG, "Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url, requestJson.toString());
+            Log.i(TAG,"Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+    /**
+     * Calls getApplicationInfo API to the target server. Request JSON data is
+     * such like as below.
+     *
+     * <pre>
+     * {
+     *   "method": "getApplicationInfo",
+     *   "params": [""],
+     *   "id": 2,
+     *   "version": "1.0"
+     * }
+     * </pre>
+     *
+     * @return JSON data of response
+     */
+    public JSONObject getApplicationInfo() throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "getApplicationInfo")
+                    .put("params", new JSONArray())
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG, "Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url,
+                    requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+    /**
+     * Calls startRecMode API to the target server. Request JSON data is such
+     * like as below.
+     *
+     * <pre>
+     * {
+     *   "method": "startRecMode",
+     *   "params": [],
+     *   "id": 2,
+     *   "version": "1.0"
+     * }
+     * </pre>
+     *
+     * @return JSON data of response
+     */
+    public JSONObject startRecMode() throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "startRecMode")
+                    .put("params", new JSONArray())
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG, "Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url,
+                    requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
 
     /**
      * Calls actTakePicture API to the target server. Request JSON data is such
@@ -105,6 +207,22 @@ public class ApiHelper {
         }
     }
 
-    // THREADING NON-SAFE
+    public JSONObject getSupportedIsoSpeedRate() throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "getSupportedIsoSpeedRate")
+                    .put("params", new JSONArray())
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG,"Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url, requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
 
 }

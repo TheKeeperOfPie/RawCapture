@@ -34,13 +34,9 @@ public class ViewfinderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        TextView testTextView = new TextView(context);
-        testTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
-        testTextView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        testTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-        testTextView.setText("Viewfinder goes here");
+        View view = inflater.inflate(R.layout.viewfinder_layout, null);
 
-        Button testPictureButton = new Button(context);
+        Button testPictureButton = (Button) view.findViewById(R.id.take_picture_button);
         testPictureButton.setText("Take Picture");
         testPictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,13 +54,7 @@ public class ViewfinderFragment extends Fragment {
             }
         });
 
-        LinearLayout linearLayout = new LinearLayout(context);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-
-//        linearLayout.addView(testTextView);
-        linearLayout.addView(testPictureButton);
-
-        return linearLayout;
+        return view;
 
 //        return super.onCreateView(inflater, container, savedInstanceState);
     }
