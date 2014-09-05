@@ -136,6 +136,107 @@ public class ApiHelper {
         }
     }
 
+    public JSONObject getSupportedIsoSpeedRate() throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "getSupportedIsoSpeedRate")
+                    .put("params", new JSONArray())
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG,"Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url, requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+    /**
+     *
+     * @param mode still, movie, audio, intervalstill
+     * @return response
+     * @throws IOException
+     */
+    public JSONObject setShootMode(String mode) throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "setShootMode")
+                    .put("params", new JSONArray().put(mode))
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG,"Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url, requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+    public JSONObject getShootMode() throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "getShootMode")
+                    .put("params", new JSONArray())
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG,"Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url, requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+    public JSONObject getSupportedShootMode() throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "getSupportedShootMode")
+                    .put("params", new JSONArray())
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG,"Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url, requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+    /**
+     *
+     * @return string current mode, string-array available shoot modes
+     * @throws IOException
+     */
+    public JSONObject getAvailableShootMode() throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "getAvailableShootMode")
+                    .put("params", new JSONArray())
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG,"Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url, requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
 
     /**
      * Calls actTakePicture API to the target server. Request JSON data is such
@@ -150,10 +251,9 @@ public class ApiHelper {
      * }
      * </pre>
      *
-     * @return JSON data of response
+     * @return JSON data of response, 40403 error on camera busy
      */
     public JSONObject actTakePicture() throws IOException {
-
         try {
             JSONObject requestJson = new JSONObject()
                     .put("method", "actTakePicture")
@@ -172,6 +272,138 @@ public class ApiHelper {
         }
     }
 
+    public JSONObject awaitTakePicture() throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "awaitTakePicture")
+                    .put("params", new JSONArray())
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG, "Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url,
+                    requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+    public JSONObject startMovieRec() throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "startMovieRec")
+                    .put("params", new JSONArray())
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG, "Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url,
+                    requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+    public JSONObject stopMovieRec() throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "stopMovieRec")
+                    .put("params", new JSONArray())
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG, "Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url,
+                    requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+    public JSONObject startAudioRec() throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "startAudioRec")
+                    .put("params", new JSONArray())
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG, "Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url,
+                    requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+    public JSONObject stopAudioRec() throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "stopAudioRec")
+                    .put("params", new JSONArray())
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG, "Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url,
+                    requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+    public JSONObject startIntervalStillRec() throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "startIntervalStillRec")
+                    .put("params", new JSONArray())
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG, "Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url,
+                    requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+    public JSONObject stopIntervalStillRec() throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "stopIntervalStillRec")
+                    .put("params", new JSONArray())
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG, "Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url,
+                    requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
 
     /**
      * Calls startLiveview API to the target server. Request JSON data is such
@@ -207,22 +439,88 @@ public class ApiHelper {
         }
     }
 
-    public JSONObject getSupportedIsoSpeedRate() throws IOException {
+    public JSONObject stopLiveview() throws IOException {
         try {
             JSONObject requestJson = new JSONObject()
-                    .put("method", "getSupportedIsoSpeedRate")
+                    .put("method", "stopLiveview")
                     .put("params", new JSONArray())
                     .put("id", requestId++)
                     .put("version", "1.0");
             String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
 
             Log.i(TAG,"Request:  " + requestJson.toString());
-            String responseJson = HttpConnector.httpPost(url, requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url,
+                    requestJson.toString());
             Log.i(TAG, "Response: " + responseJson);
             return new JSONObject(responseJson);
         } catch (JSONException e) {
             throw new IOException(e);
         }
     }
+
+    /**
+     *
+     * @param size L (XGA), M (VGA)
+     * @return
+     * @throws IOException
+     */
+    public JSONObject startLiveviewWithSize(String size) throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "startLiveviewWithSize")
+                    .put("params", new JSONArray().put(size))
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG,"Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url,
+                    requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+    public JSONObject getLiveviewSize() throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "getLiveviewSize")
+                    .put("params", new JSONArray())
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG,"Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url,
+                    requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+    public JSONObject getSupportedLiveviewSize() throws IOException {
+        try {
+            JSONObject requestJson = new JSONObject()
+                    .put("method", "getSupportedLiveviewSize")
+                    .put("params", new JSONArray())
+                    .put("id", requestId++)
+                    .put("version", "1.0");
+            String url = AppSettings.getCameraActionUrl() + "/" + CAMERA_SERVICE;
+
+            Log.i(TAG,"Request:  " + requestJson.toString());
+            String responseJson = HttpConnector.httpPost(url,
+                    requestJson.toString());
+            Log.i(TAG, "Response: " + responseJson);
+            return new JSONObject(responseJson);
+        } catch (JSONException e) {
+            throw new IOException(e);
+        }
+    }
+
+    
 
 }
