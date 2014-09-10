@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:key="initial_delay"
+        android:title="@string/initial_delay"
+        android:summary="@string/initial_delay_description"
+        android:inputType="number"
+        android:numeric="integer"
+        android:maxLength="10"
+        android:defaultValue="10000"
+        />
+
+    <EditTextPreference
+        android:key="timelapse_interval"
+        android:title="@string/timelapse_interval"
+        android:summary="@string/timelapse_interval_description"
+        android:inputType="number"
+        android:numeric="integer"
+        android:maxLength="10"
+        android:defaultValue="1000"
+        />
+
+    <SwitchPreference
+        android:key="force_interval"
+        android:title="@string/force_interval"
+        android:summary="@string/force_interval_description"
+        android:defaultValue="true"
+        />
+
+</PreferenceScreen>

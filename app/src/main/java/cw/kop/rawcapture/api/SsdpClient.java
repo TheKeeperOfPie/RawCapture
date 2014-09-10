@@ -55,7 +55,7 @@ public class SsdpClient {
         public void onErrorFinished();
     }
 
-    public boolean search(final SearchResultHandler handler) {
+    public boolean search(final String ssid, final SearchResultHandler handler) {
         if (isSearching) {
             Log.w(TAG, "search() already searching.");
             return false;
@@ -125,6 +125,7 @@ public class SsdpClient {
 
                             // Fetch Device Description XML and parse it.
                             CameraDevice device = fetch(ddLocation);
+                            device.setSsid(ssid);
 
                             handler.onDeviceFound(device);
 

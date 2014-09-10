@@ -8,8 +8,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -175,11 +177,18 @@ public class DeviceListFragment extends Fragment {
         @Override
         public void onReceive(final Context context, Intent intent)
         {
-            if (wifiManager.getConnectionInfo().getNetworkId() == connectedNetId) {
+
+            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+
+            if (wifiInfo == null) {
+                return;
+            }
+
+            if (wifiInfo.getNetworkId() == connectedNetId) {
 
                 SsdpClient ssdpClient = new SsdpClient();
 
-                ssdpClient.search(new SsdpClient.SearchResultHandler() {
+                ssdpClient.search(wifiInfo.getSSID(), new SsdpClient.SearchResultHandler() {
 
                     private boolean deviceFound = false;
 

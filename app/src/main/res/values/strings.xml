@@ -6,11 +6,24 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
+
+    <!--Buttons-->
     <string name="scan_button">Scan for Devices</string>
+    <string name="start_button">Start</string>
+    <string name="stop_button">Stop</string>
+
+    <!--Timelapse Preferences-->
+    <string name="initial_delay">Initial Delay</string>
+    <string name="initial_delay_description">Delay before starting timelapse in milliseconds</string>
+    <string name="timelapse_interval">Timelapse Interval</string>
+    <string name="timelapse_interval_description">Interval between shots in milliseconds</string>
+    <string name="force_interval">Force Interval</string>
+    <string name="force_interval_description">Force constant rate, even if previous request is not complete</string>
 
     <string-array name="fragment_names">
         <item>Viewfinder</item>
         <item>Device List</item>
+        <item>Remote Timelapse</item>
         <item>Settings</item>
     </string-array>
 

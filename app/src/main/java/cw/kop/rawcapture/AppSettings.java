@@ -1,5 +1,7 @@
 package cw.kop.rawcapture;
 
+import android.content.SharedPreferences;
+
 import cw.kop.rawcapture.api.CameraDevice;
 
 /**
@@ -9,7 +11,12 @@ import cw.kop.rawcapture.api.CameraDevice;
 
 public class AppSettings {
 
+    private static SharedPreferences prefs;
     private static CameraDevice cameraDevice = null;
+
+    public static void setSharedPreferences(SharedPreferences preferences) {
+        prefs = preferences;
+    }
 
     public static void setCameraDevice(CameraDevice device) {
         cameraDevice = device;
@@ -33,6 +40,22 @@ public class AppSettings {
 
     public static String getCameraActionUrl() {
         return cameraDevice.getActionUrl();
+    }
+
+    public static String getCameraSSID() {
+        return cameraDevice.getCameraSsid();
+    }
+
+    public static int getTimelapseDelay() {
+        return Integer.parseInt(prefs.getString("initial_delay", "10000"));
+    }
+
+    public static int getTimelapseInterval() {
+        return Integer.parseInt(prefs.getString("timelapse_interval", "1000"));
+    }
+
+    public static boolean forceTimelapseInterval() {
+        return prefs.getBoolean("force_interval", true);
     }
 
 }

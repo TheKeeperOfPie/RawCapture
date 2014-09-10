@@ -9,6 +9,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -41,6 +42,8 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        AppSettings.setSharedPreferences(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
+
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -70,6 +73,11 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
                         .commit();
                 break;
             case 2:
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.container, new TimelapseFragment())
+                        .commit();
+                break;
+            case 3:
                 getFragmentManager().beginTransaction()
                         .replace(R.id.container, PlaceholderFragment.newInstance(2))
                         .commit();

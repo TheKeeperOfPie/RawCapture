@@ -5,6 +5,7 @@ package cw.kop.rawcapture.api;
  */
 public class CameraDevice {
 
+    private String ssid;
     private String ddUrl;
     private String friendlyName;
     private String modelName;
@@ -14,7 +15,11 @@ public class CameraDevice {
     public CameraDevice() {
 
     }
-
+    
+    public void setSsid(String name) {
+        ssid = name;
+    }
+    
     public void setDdUIrl(String url) {
         ddUrl = url;
     }
@@ -35,6 +40,10 @@ public class CameraDevice {
         actionUrl = url;
     }
 
+    public String getCameraSsid() {
+        return ssid;
+    }
+    
     public String getDdUIrl() {
         return ddUrl;
     }
@@ -54,5 +63,4 @@ public class CameraDevice {
     public String getActionUrl() {
         return actionUrl;
     }
-
 }
