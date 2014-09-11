@@ -58,4 +58,8 @@ public class AppSettings {
         return prefs.getBoolean("force_interval", true);
     }
 
+    public static boolean useTimelapsePreview() {
+        return prefs.getBoolean("timelapse_preview", false);
+    }
+
 }

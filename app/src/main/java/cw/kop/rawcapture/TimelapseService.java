@@ -8,8 +8,10 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,9 +26,12 @@ import cw.kop.rawcapture.api.ApiHelper;
  */
 public class TimelapseService extends Service {
 
+    public static final String IMAGE_RECEIVED = "cw.kop.rawcapture.TimelapseService.IMAGE_RECEIVED";
+
     private ScheduledThreadPoolExecutor executor;
     private Runnable timelapseRunnable;
     private Handler handler;
+    private LocalBroadcastManager localBroadcastManager;
     private String url = null;
 
     private BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
@@ -48,6 +53,7 @@ public class TimelapseService extends Service {
         super.onCreate();
         executor = new ScheduledThreadPoolExecutor(1);
         handler = new Handler();
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);
     }
 
     @Override
@@ -60,7 +66,7 @@ public class TimelapseService extends Service {
 
             @Override
             public void run() {
-                testToast();
+                sendImageReturn("PLACEHOLDER URL");
                 Log.i("TS", "Test shot");
 //                try {
 //                    apiHelper.actTakePicture();
@@ -69,6 +75,7 @@ public class TimelapseService extends Service {
 //                }
             }
         };
+
         if (AppSettings.forceTimelapseInterval()) {
             executor.scheduleAtFixedRate(timelapseRunnable, AppSettings.getTimelapseDelay(), AppSettings.getTimelapseInterval(), TimeUnit.MILLISECONDS);
             Log.i("TS", "scheduleAtFixedRate");
@@ -92,6 +99,7 @@ public class TimelapseService extends Service {
         return null;
     }
 
+    // Test
     private void testToast() {
         handler.post(new Runnable() {
             @Override
@@ -99,6 +107,12 @@ public class TimelapseService extends Service {
                 Toast.makeText(TimelapseService.this, "Timelapse shot" + System.currentTimeMillis(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void sendImageReturn(String imageUrl) {
+        Intent imageIntent = new Intent(TimelapseService.IMAGE_RECEIVED);
+        imageIntent.putExtra("image_url", imageUrl);
+        localBroadcastManager.sendBroadcast(imageIntent);
     }
 
 }
